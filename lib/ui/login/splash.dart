@@ -7,15 +7,13 @@ import 'package:sagrado_flutter/ui/login/code.dart';
 import 'package:sagrado_flutter/widgets/auth.dart';
 import 'package:flutter/cupertino.dart';
 
-
 class SplashScreen extends StatefulWidget {
   @override
   _SplashScreenState createState() => _SplashScreenState();
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  final MaskedTextController controller =
-      MaskedTextController(mask: '+7(000)-000-0000');
+  final MaskedTextController controller = MaskedTextController(mask: '+7(000)-000-0000');
 
   Image _imageAsset = Image.asset('assets/images/checkLogin.png');
 
@@ -37,8 +35,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(
-        SystemUiOverlayStyle(statusBarColor: Colors.yellowAccent));
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(statusBarColor: Colors.black));
     AuthTextField authTextField = AuthTextField(controller: controller);
 
     return GestureDetector(
@@ -59,11 +56,10 @@ class _SplashScreenState extends State<SplashScreen> {
                 ),
                 child: SingleChildScrollView(
                   child: ConstrainedBox(
-                    constraints: BoxConstraints(
-                        minHeight: viewportConstraints.maxHeight),
+                    constraints: BoxConstraints(minHeight: viewportConstraints.maxHeight),
                     child: SafeArea(
                       child: Container(
-                        padding: const EdgeInsets.only(top: 120.0),
+                        padding: const EdgeInsets.only(top: 40.0),
                         alignment: Alignment.topCenter,
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.start,
@@ -71,13 +67,11 @@ class _SplashScreenState extends State<SplashScreen> {
                             Text(
                               'ВОЙТИ',
                               textAlign: TextAlign.center,
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 36),
+                              style: TextStyle(color: Colors.white, fontSize: 36),
                             ),
                             SizedBox(height: 40.0),
                             Padding(
-                              padding: const EdgeInsets.only(
-                                  left: 40.0, right: 40.0),
+                              padding: const EdgeInsets.only(left: 40.0, right: 40.0),
                               child: Text(
                                 'Используйте аккаунты ВК или Facebook для вода в аккаунт',
                                 textAlign: TextAlign.center,
@@ -89,17 +83,14 @@ class _SplashScreenState extends State<SplashScreen> {
                             ),
                             SizedBox(height: 40),
                             SizedBox(
-                              height: 100,
                               width: 250,
                               child: authTextField,
                             ),
+                            SizedBox(height: 40),
                             AuthButton(
                               Text(
                                 'Вконтакте',
-                                style: TextStyle(
-                                    fontSize: 15,
-                                    letterSpacing: 1.5,
-                                    color: Colors.white),
+                                style: TextStyle(fontSize: 15, letterSpacing: 1.5, color: Colors.white),
                               ),
                               color: Color(
                                 0xff4c75a3,
@@ -135,14 +126,10 @@ class _SplashScreenState extends State<SplashScreen> {
                                     child: RichText(
                                       text: TextSpan(
                                         children: [
-                                          TextSpan(
-                                              text: 'Я принимаю условия\n',
-                                              style: TextStyle(
-                                                  color: Colors.white)),
+                                          TextSpan(text: 'Я принимаю условия\n', style: TextStyle(color: Colors.white)),
                                           TextSpan(
                                             text: 'Лицензионного соглашения',
-                                            style: TextStyle(
-                                                color: Colors.blueAccent),
+                                            style: TextStyle(color: Colors.blueAccent),
                                           ),
                                         ],
                                       ),
@@ -211,13 +198,15 @@ class LoginPhoneButton extends StatelessWidget {
                   //   },
                   // );
 
-                  var response = await NetManager.shared
-                      .signInPhone(phone: authTextField.controller.text);
+                  var response = await NetManager.shared.signInPhone(phone: authTextField.controller.text);
 
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => CodeScreen(isNew: response.isNew, phone: response.username,),
+                      builder: (context) => CodeScreen(
+                        isNew: response.isNew,
+                        phone: response.username,
+                      ),
                     ),
                   );
                 } catch (e) {

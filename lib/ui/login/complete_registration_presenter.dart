@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
+import 'package:sagrado_flutter/net/net_manager.dart';
 import 'package:sagrado_flutter/ui/login/complete_registration.dart';
 
 class RegistrationData {
@@ -24,16 +25,16 @@ class RegistrationData {
 }
 
 class CompleteRegistrationPresenter {
-  var _data =
-      RegistrationData(name: "", lastname: "", birthDate: null, gender: 2);
+  var _data = RegistrationData(name: "", lastname: "", birthDate: null, gender: 2);
   var _presenterView = CompleteRegistration();
 
-  void register() {
+  void register() async {
     // TODO(uuttff8): save settings
-    // NetManager.shared.saveSettings(params: getParams());
+    NetManager.shared.saveSettings(params: getParams());
+    return;
   }
 
-  void getParams() {
+  Map<String, dynamic> getParams() {
     Map<String, dynamic> params;
 
     Map<String, bool> pushSettings = {
@@ -58,6 +59,8 @@ class CompleteRegistrationPresenter {
       "push_subscribes": pushSettings,
       "push_token": "",
     };
+
+    return params;
   }
 
   void onGender({index: int}) {
@@ -106,17 +109,21 @@ class CompleteRegistrationPresenter {
     return this._data.birthDate != null;
   }
 
-  void checkFields({name: String, lastName: String, birthDate: DateTime}) {
-    this._data = RegistrationData(
-        name: name,
-        lastname: lastName,
-        birthDate: birthDate,
-        gender: this._data.gender);
+  bool checkFields({
+    @required String name,
+    @required String lastName,
+    @required DateTime birthDate,
+  }) {
+    this._data = RegistrationData(name: name, lastname: lastName, birthDate: birthDate, gender: this._data.gender);
 
     bool isNameValid = this._isNameValid();
     bool isLastNameValid = this._isLastNameValid();
     bool isDateTimeValid = this._isDateValid();
 
-    if (isNameValid && isLastNameValid && isDateTimeValid) {}
+    if (isNameValid && isLastNameValid && isDateTimeValid) {
+      return true;
+    } else {
+      return false;
+    }
   }
 }

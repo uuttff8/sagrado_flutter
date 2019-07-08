@@ -1,18 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
+import 'package:sagrado_flutter/ui/base/base_screen.dart';
 import 'package:sagrado_flutter/ui/login/complete_registration_presenter.dart';
 
-class CompleteRegistration extends StatefulWidget {
-  const CompleteRegistration({Key key}) : super(key: key);
+class CompleteRegistration extends BaseScreen {
+  CompleteRegistration({Key key}) : super(key: key);
+
+  final CompleteRegistrationPresenter _presenter = CompleteRegistrationPresenter();
+
+  void onFieldsChecked() {
+    _presenter.register();
+  }
 
   @override
   _CompleteRegistrationState createState() => _CompleteRegistrationState();
 }
 
 class _CompleteRegistrationState extends State<CompleteRegistration> {
-  CompleteRegistrationPresenter _presenter = CompleteRegistrationPresenter();
-
   DateTime date = DateTime.now();
   int sharedValue = 0;
   final Map<int, Widget> logoWidgets = {
@@ -35,9 +40,9 @@ class _CompleteRegistrationState extends State<CompleteRegistration> {
             alignment: Alignment.centerLeft,
             child: Column(
               children: <Widget>[
+                SizedBox(height: 20),
                 drawNextButton(),
                 RegistrationTitle(),
-                SizedBox(height: 30),
                 NameTextField(hintText: "Имя", controller: nameController),
                 SizedBox(height: 15),
                 NameTextField(hintText: "Фамилия", controller: lastNameController),
@@ -79,8 +84,7 @@ class _CompleteRegistrationState extends State<CompleteRegistration> {
                       context: context,
                       builder: (BuildContext builder) {
                         return Container(
-                          height:
-                              MediaQuery.of(context).copyWith().size.height / 3,
+                          height: MediaQuery.of(context).copyWith().size.height / 3,
                           child: CupertinoDatePicker(
                             initialDateTime: DateTime.now(),
                             onDateTimeChanged: (DateTime newdate) {
@@ -108,9 +112,6 @@ class _CompleteRegistrationState extends State<CompleteRegistration> {
     );
   }
 
-  void onFieldChecked() {
-    _presenter.register();
-  }
   Widget drawNextButton() => Container(
         alignment: Alignment.topRight,
         child: PlatformWidget(
@@ -120,13 +121,34 @@ class _CompleteRegistrationState extends State<CompleteRegistration> {
                 'Далее',
                 style: TextStyle(color: CupertinoColors.activeBlue),
               ),
-              onPressed: () {
-
-              },
+              onPressed: () {},
+            );
+          },
+          android: (context) {
+            return FlatButton(
+              child: Text(
+                'Далее',
+                style: TextStyle(color: Colors.blue, fontSize: 17),
+              ),
+              onPressed: () {},
             );
           },
         ),
       );
+
+  void platformCheckFields() {
+    bool isCheck = widget._presenter.checkFields(
+      name: nameController.text,
+      lastName: lastNameController.text,
+      birthDate: date,
+    );
+
+    if (isCheck == true) {
+      widget._presenter.register();
+    } else {
+      widget.showErrorDialog(context, title: "Zapolnite vse polya", subtitle: "");
+    }
+  }
 }
 
 class RegistrationTitle extends StatelessWidget {
@@ -166,6 +188,7 @@ class NameTextField extends StatelessWidget {
     return TextField(
       decoration: InputDecoration(hintText: hintText),
       controller: controller,
+      autocorrect: false,
     );
   }
 }

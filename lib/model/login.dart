@@ -18,8 +18,7 @@ class PhoneCodeResponse {
   final int userId;
   final bool error;
 
-  PhoneCodeResponse(
-      {this.osType, this.pushToken, this.status, this.token, this.userId, this.error});
+  PhoneCodeResponse({this.osType, this.pushToken, this.status, this.token, this.userId, this.error});
 
   factory PhoneCodeResponse.fromJson(Map<String, dynamic> json) {
     return PhoneCodeResponse(
@@ -31,8 +30,4 @@ class PhoneCodeResponse {
       error: json['error'],
     );
   }
-}
-
-class SaveSettingsResponse {
-
 }

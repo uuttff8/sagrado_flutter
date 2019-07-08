@@ -4,11 +4,12 @@ import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:sagrado_flutter/net/net_manager.dart';
 import 'package:flutter_keychain/flutter_keychain.dart';
+import 'package:sagrado_flutter/ui/base/base.dart';
 
 import 'package:sagrado_flutter/ui/login/chose.dart';
 import 'package:sagrado_flutter/ui/login/complete_registration.dart';
 
-class CodeScreen extends StatefulWidget {
+class CodeScreen extends BaseScreen {
   CodeScreen({Key key, @required this.phone, @required this.isNew}) : super(key: key);
 
   final bool isNew;
@@ -44,38 +45,7 @@ class _CodeScreenState extends State<CodeScreen> {
                   padding: EdgeInsets.zero,
                   child: Icon(CupertinoIcons.forward),
                   onPressed: () async {
-                    try {
-                      var response = await NetManager.shared.codeConfirmPhone(
-                        phone: widget.phone,
-                        code: codeTextField.controller.text,
-                      );
-
-                      if (response.error == true) {
-                        badCodeForm(context);
-                        return;
-                      }
-                      
-                      print(widget.phone +
-                          '  cc   ' +
-                          codeTextField.controller.text);
-
-                      FlutterKeychain.put(key: 'token', value: response.token ?? ''); // i'm not sure, but...
-
-                      if (widget.isNew == true) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => CompleteRegistration()),
-                        );
-                      } else {
-                        Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => ChoseScreen()),
-                      );
-                      }
-                      
-                    } catch (e) {
-                      print('done: $e');
-                    }
+                    await confirmCode(codeTextField, context);
                   },
                 ),
                 leading: CupertinoButton(
@@ -85,6 +55,18 @@ class _CodeScreenState extends State<CodeScreen> {
                     Navigator.pop(context);
                   },
                 ),
+              );
+            },
+            android: (context) {
+              return MaterialAppBarData(
+                actions: <Widget>[
+                  IconButton(
+                    icon: Icon(Icons.arrow_forward),
+                    onPressed: () async {
+                      await confirmCode(codeTextField, context);
+                    },
+                  )
+                ],
               );
             },
           ),
@@ -104,26 +86,20 @@ class _CodeScreenState extends State<CodeScreen> {
               child: Column(
                 children: <Widget>[
                   SizedBox(
-                    height: 100,
+                    height: 40,
                   ),
                   Text(
                     'ВВЕДИТЕ КОД ПОДТВЕРЖДЕНИЯ',
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 26,
-                        color: Colors.white),
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 26, color: Colors.white),
                     textAlign: TextAlign.center,
                   ),
                   SizedBox(height: 30),
                   Text(
                     'Код подтверждения был выслан на указанный вами телефон',
-                    style: TextStyle(
-                        fontWeight: FontWeight.normal,
-                        fontSize: 15,
-                        color: Colors.white),
+                    style: TextStyle(fontWeight: FontWeight.normal, fontSize: 15, color: Colors.white),
                     textAlign: TextAlign.center,
                   ),
-                  SizedBox(height: 100),
+                  SizedBox(height: 40),
                   CodeTextField(
                     controller: controller,
                   ),
@@ -133,7 +109,14 @@ class _CodeScreenState extends State<CodeScreen> {
                       'Выслать код повторно',
                       style: TextStyle(color: Colors.blue, fontSize: 15),
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      // TODO (uuttff8): create resms
+                    },
+                    android: (context) {
+                      return MaterialRaisedButtonData(
+                        color: Colors.white12,
+                      );
+                    },
                   ),
                 ],
               ),
@@ -144,22 +127,36 @@ class _CodeScreenState extends State<CodeScreen> {
     );
   }
 
-  void badCodeForm(BuildContext context) {
-    showPlatformDialog(
-      context: context,
-      builder: (_) => PlatformAlertDialog(
-        title: Text('Код'),
-        content: Text('Введите правильный код'),
-        actions: <Widget>[
-          PlatformDialogAction(
-            child: Text('Ok'),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
-        ],
-      ),
-    );
+  Future<void> confirmCode(CodeTextField codeTextField, BuildContext context) async {
+    try {
+      var response = await NetManager.shared.codeConfirmPhone(
+        phone: widget.phone,
+        code: codeTextField.controller.text,
+      );
+
+      if (response.error == true) {
+        widget.showErrorDialog(context, title: 'Код', subtitle: 'Введите правильный код');
+        return;
+      }
+
+      print(widget.phone + '  cc   ' + codeTextField.controller.text);
+
+      FlutterKeychain.put(key: 'token', value: response.token ?? ''); // i'm not sure, but...
+
+      if (widget.isNew == true) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => CompleteRegistration()),
+        );
+      } else {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => ChoseScreen()),
+        );
+      }
+    } catch (e) {
+      print('done: $e');
+    }
   }
 }
 
@@ -175,10 +172,8 @@ class CodeTextField extends StatelessWidget {
       decoration: InputDecoration(
         hintText: 'Enter the code from SMS',
         hintStyle: TextStyle(color: Colors.white),
-        disabledBorder:
-            OutlineInputBorder(borderSide: BorderSide(color: Colors.white)),
-        focusedBorder:
-            OutlineInputBorder(borderSide: BorderSide(color: Colors.white)),
+        disabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white)),
+        focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white)),
         border: OutlineInputBorder(
           borderSide: BorderSide(
             color: Colors.white,

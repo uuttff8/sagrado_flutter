@@ -4,7 +4,7 @@ import 'dart:io';
 
 import 'package:flutter_keychain/flutter_keychain.dart';
 import 'package:http/http.dart' as http;
-import 'package:sagrado_flutter/model/login_model.dart';
+import 'package:sagrado_flutter/model/model.dart';
 import 'package:sagrado_flutter/net/constants.dart';
 
 class NetManager {
@@ -47,18 +47,13 @@ class NetManager {
     );
 
     if (response.statusCode == 200) {
-      return parseReg(response.body);
+      return parser.parseReg(response.body);
     } else {
       throw Exception('try later');
     }
   }
 
-  PhoneAuthResponse parseReg(String responseBody) {
-    return PhoneAuthResponse.fromJson(json.decode(responseBody));
-  }
-
-  Future<PhoneCodeResponse> codeConfirmPhone(
-      {phone: String, code: String}) async {
+  Future<PhoneCodeResponse> codeConfirmPhone({phone: String, code: String}) async {
     Map<String, String> queryParameters = {
       'username': phone,
       'code': code,
@@ -85,17 +80,23 @@ class NetManager {
     }
   }
 
-  
+  Future<User> saveSettings({Map<String, dynamic> params}) async {
+    var user = User();
+    return user;
+  }
 }
 
 class _NetManagerParse {
+  PhoneAuthResponse parseReg(String responseBody) {
+    return PhoneAuthResponse.fromJson(json.decode(responseBody));
+  }
+
   PhoneCodeResponse parseConfirm(String responseBody) {
     return PhoneCodeResponse.fromJson(json.decode(responseBody));
   }
 }
 
-void _printData(
-    {String url, Future<Map> headers, int statusCode, String body}) async {
+void _printData({String url, Future<Map> headers, int statusCode, String body}) async {
   print('----');
   print(url);
   print(await headers);
