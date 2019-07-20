@@ -53,7 +53,8 @@ class NetManager {
     }
   }
 
-  Future<PhoneCodeResponse> codeConfirmPhone({phone: String, code: String}) async {
+  Future<PhoneCodeResponse> codeConfirmPhone(
+      {phone: String, code: String}) async {
     Map<String, String> queryParameters = {
       'username': phone,
       'code': code,
@@ -81,6 +82,27 @@ class NetManager {
   }
 
   Future<User> saveSettings({Map<String, dynamic> params}) async {
+    Uri uri = Uri.http(baseUrl, '/user/settings', params);
+    final response = await http.post(
+      uri,
+      headers: await headers,
+      body: json.encode(params),
+      encoding: utf8,
+    );
+
+    _printData(
+      url: baseUrl + '/reg',
+      body: response.body,
+      headers: headers,
+      statusCode: response.statusCode,
+    );
+
+    if (response.statusCode == 200) {
+      return parser.parseSaveSettings(response.body);
+    } else {
+      throw Exception('try later');
+    }
+
     var user = User();
     return user;
   }
@@ -94,9 +116,14 @@ class _NetManagerParse {
   PhoneCodeResponse parseConfirm(String responseBody) {
     return PhoneCodeResponse.fromJson(json.decode(responseBody));
   }
+
+  User parseSaveSettings(String responseBody) {
+    return User.fromJson(json.decode(responseBody));
+  }
 }
 
-void _printData({String url, Future<Map> headers, int statusCode, String body}) async {
+void _printData(
+    {String url, Future<Map> headers, int statusCode, String body}) async {
   print('----');
   print(url);
   print(await headers);
