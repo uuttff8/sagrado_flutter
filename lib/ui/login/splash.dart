@@ -3,7 +3,7 @@ import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:flutter/services.dart';
 import 'package:sagrado_flutter/net/net_manager.dart';
-import 'package:sagrado_flutter/ui/login/code.dart';
+import 'package:sagrado_flutter/ui/login/code/code.dart';
 import 'package:sagrado_flutter/widgets/auth.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -13,7 +13,8 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  final MaskedTextController controller = MaskedTextController(mask: '+7(000)-000-0000');
+  final MaskedTextController controller =
+      MaskedTextController(mask: '+7(000)-000-0000');
 
   Image _imageAsset = Image.asset('assets/images/checkLogin.png');
 
@@ -35,7 +36,8 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(statusBarColor: Colors.black));
+    SystemChrome.setSystemUIOverlayStyle(
+        SystemUiOverlayStyle(statusBarColor: Colors.black));
     AuthTextField authTextField = AuthTextField(controller: controller);
 
     return GestureDetector(
@@ -56,7 +58,8 @@ class _SplashScreenState extends State<SplashScreen> {
                 ),
                 child: SingleChildScrollView(
                   child: ConstrainedBox(
-                    constraints: BoxConstraints(minHeight: viewportConstraints.maxHeight),
+                    constraints: BoxConstraints(
+                        minHeight: viewportConstraints.maxHeight),
                     child: SafeArea(
                       child: Container(
                         padding: const EdgeInsets.only(top: 40.0),
@@ -67,11 +70,13 @@ class _SplashScreenState extends State<SplashScreen> {
                             Text(
                               'ВОЙТИ',
                               textAlign: TextAlign.center,
-                              style: TextStyle(color: Colors.white, fontSize: 36),
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 36),
                             ),
                             SizedBox(height: 40.0),
                             Padding(
-                              padding: const EdgeInsets.only(left: 40.0, right: 40.0),
+                              padding: const EdgeInsets.only(
+                                  left: 40.0, right: 40.0),
                               child: Text(
                                 'Используйте аккаунты ВК или Facebook для вода в аккаунт',
                                 textAlign: TextAlign.center,
@@ -90,7 +95,10 @@ class _SplashScreenState extends State<SplashScreen> {
                             AuthButton(
                               Text(
                                 'Вконтакте',
-                                style: TextStyle(fontSize: 15, letterSpacing: 1.5, color: Colors.white),
+                                style: TextStyle(
+                                    fontSize: 15,
+                                    letterSpacing: 1.5,
+                                    color: Colors.white),
                               ),
                               color: Color(
                                 0xff4c75a3,
@@ -126,10 +134,14 @@ class _SplashScreenState extends State<SplashScreen> {
                                     child: RichText(
                                       text: TextSpan(
                                         children: [
-                                          TextSpan(text: 'Я принимаю условия\n', style: TextStyle(color: Colors.white)),
+                                          TextSpan(
+                                              text: 'Я принимаю условия\n',
+                                              style: TextStyle(
+                                                  color: Colors.white)),
                                           TextSpan(
                                             text: 'Лицензионного соглашения',
-                                            style: TextStyle(color: Colors.blueAccent),
+                                            style: TextStyle(
+                                                color: Colors.blueAccent),
                                           ),
                                         ],
                                       ),
@@ -183,22 +195,8 @@ class LoginPhoneButton extends StatelessWidget {
             onPressed: () async {
               if (authTextField.controller.text.length == 16) {
                 try {
-                  // NetManager.singleton
-                  //     .signInPhone(phone: authTextField.controller.text)
-                  //     .whenComplete(
-                  //   () {
-                  //     Navigator.push(
-                  //       context,
-                  //       MaterialPageRoute(
-                  //         builder: (context) => CodeScreen(
-                  //           phone: authTextField.controller.text,
-                  //         ),
-                  //       ),
-                  //     );
-                  //   },
-                  // );
-
-                  var response = await NetManager.shared.signInPhone(phone: authTextField.controller.text);
+                  var response = await NetManager.shared
+                      .signInPhone(phone: authTextField.controller.text);
 
                   Navigator.push(
                     context,
@@ -210,10 +208,13 @@ class LoginPhoneButton extends StatelessWidget {
                     ),
                   );
                 } catch (e) {
-                  print('done: $e');
+                  _showErrorDialog(context, text: "Что-то пошло не так");
+                  print(
+                      'Exception when authTextField.controller.text.length == 16: $e');
                 }
               } else if (authTextField.controller.text.length != 16) {
-                phoneTextIncomplete(context);
+                _showErrorDialog(context,
+                    text: "Вы должны ввести правильный номер телефона");
               }
             },
           ),
@@ -222,15 +223,17 @@ class LoginPhoneButton extends StatelessWidget {
     );
   }
 
-  void phoneTextIncomplete(BuildContext context) {
+  void _showErrorDialog(BuildContext context, {String text}) {
     showPlatformDialog(
       context: context,
       builder: (_) => PlatformAlertDialog(
-        title: Text('Предупреждение'),
-        content: Text('Вы должны ввести правильный номер телефона'),
+        title: Text(text),
         actions: <Widget>[
           PlatformDialogAction(
-            child: Text('Ok'),
+            child: Text(
+              'Ok',
+              style: TextStyle(fontSize: 13),
+            ),
             onPressed: () {
               Navigator.pop(context);
             },

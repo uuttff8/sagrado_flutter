@@ -1,17 +1,15 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:sagrado_flutter/ui/base/base_screen.dart';
-import 'package:sagrado_flutter/ui/login/complete_registration_presenter.dart';
+import 'package:sagrado_flutter/ui/login/complete_registration/complete_registration_provider.dart';
 
-class CompleteRegistration extends BaseScreen {
+class CompleteRegistration extends StatefulWidget {
   CompleteRegistration({Key key}) : super(key: key);
-
-  final CompleteRegistrationPresenter _presenter = CompleteRegistrationPresenter();
-
-  void onFieldsChecked() {
-    _presenter.register();
-  }
 
   @override
   _CompleteRegistrationState createState() => _CompleteRegistrationState();
@@ -27,13 +25,23 @@ class _CompleteRegistrationState extends State<CompleteRegistration> {
 
   final TextEditingController nameController = TextEditingController();
   final TextEditingController lastNameController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
+    var provider = Provider.of<CompleteRegistrationProvider>(context);
+
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).requestFocus(new FocusNode());
       },
-      child: PlatformScaffold(
+      child: Scaffold(
+        appBar: AppBar(
+          brightness: Brightness.light,
+          backgroundColor: Colors.white,
+          actions: <Widget>[
+            drawNextButton(provider),
+          ],
+        ),
         body: SafeArea(
           minimum: EdgeInsets.only(left: 20.0, right: 20.0),
           child: Container(
@@ -41,11 +49,11 @@ class _CompleteRegistrationState extends State<CompleteRegistration> {
             child: Column(
               children: <Widget>[
                 SizedBox(height: 20),
-                drawNextButton(),
                 RegistrationTitle(),
                 NameTextField(hintText: "Имя", controller: nameController),
                 SizedBox(height: 15),
-                NameTextField(hintText: "Фамилия", controller: lastNameController),
+                NameTextField(
+                    hintText: "Фамилия", controller: lastNameController),
                 SizedBox(height: 15),
                 Row(
                   children: <Widget>[
@@ -57,6 +65,7 @@ class _CompleteRegistrationState extends State<CompleteRegistration> {
                         onValueChanged: (val) {
                           setState(() {
                             sharedValue = val;
+                            provider.onGender(index: val);
                           });
                         },
                         groupValue: sharedValue,
@@ -69,7 +78,7 @@ class _CompleteRegistrationState extends State<CompleteRegistration> {
                   children: [
                     Text('Дата рождения'),
                     SizedBox(width: 15),
-                    Text('${date.month}-${date.day}-${date.year}')
+                    Text('${DateFormat('yyyy-MM-dd').format(date)}')
                   ],
                 ),
                 SizedBox(height: 15),
@@ -84,7 +93,8 @@ class _CompleteRegistrationState extends State<CompleteRegistration> {
                       context: context,
                       builder: (BuildContext builder) {
                         return Container(
-                          height: MediaQuery.of(context).copyWith().size.height / 3,
+                          height:
+                              MediaQuery.of(context).copyWith().size.height / 3,
                           child: CupertinoDatePicker(
                             initialDateTime: DateTime.now(),
                             onDateTimeChanged: (DateTime newdate) {
@@ -112,7 +122,7 @@ class _CompleteRegistrationState extends State<CompleteRegistration> {
     );
   }
 
-  Widget drawNextButton() => Container(
+  Widget drawNextButton(CompleteRegistrationProvider provider) => Container(
         alignment: Alignment.topRight,
         child: PlatformWidget(
           ios: (context) {
@@ -121,7 +131,9 @@ class _CompleteRegistrationState extends State<CompleteRegistration> {
                 'Далее',
                 style: TextStyle(color: CupertinoColors.activeBlue),
               ),
-              onPressed: () {},
+              onPressed: () {
+                platformCheckFields(provider);
+              },
             );
           },
           android: (context) {
@@ -130,24 +142,44 @@ class _CompleteRegistrationState extends State<CompleteRegistration> {
                 'Далее',
                 style: TextStyle(color: Colors.blue, fontSize: 17),
               ),
-              onPressed: () {},
+              onPressed: () {
+                platformCheckFields(provider);
+              },
             );
           },
         ),
       );
 
-  void platformCheckFields() {
-    bool isCheck = widget._presenter.checkFields(
+  void platformCheckFields(CompleteRegistrationProvider provider) {
+    bool isCheck = provider.checkFields(
       name: nameController.text,
       lastName: lastNameController.text,
       birthDate: date,
     );
 
     if (isCheck == true) {
-      widget._presenter.register();
+      provider.register();
     } else {
-      widget.showErrorDialog(context, title: "Zapolnite vse polya", subtitle: "");
+      _showErrorDialog(context, title: "Заполните все поля");
     }
+  }
+
+  void _showErrorDialog(BuildContext context, {String title}) {
+    showPlatformDialog(
+      context: context,
+      builder: (_) => PlatformAlertDialog(
+        title: Text(title),
+        //content: Text(subtitle),
+        actions: <Widget>[
+          PlatformDialogAction(
+            child: Text('Ok'),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+        ],
+      ),
+    );
   }
 }
 

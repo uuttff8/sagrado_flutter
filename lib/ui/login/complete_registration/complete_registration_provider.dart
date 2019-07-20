@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 import 'package:sagrado_flutter/net/net_manager.dart';
-import 'package:sagrado_flutter/ui/login/complete_registration.dart';
+import 'package:sagrado_flutter/ui/login/complete_registration/complete_registration.dart';
 
 class RegistrationData {
   RegistrationData({
@@ -24,9 +24,9 @@ class RegistrationData {
   int gender;
 }
 
-class CompleteRegistrationPresenter {
-  var _data = RegistrationData(name: "", lastname: "", birthDate: null, gender: 2);
-  var _presenterView = CompleteRegistration();
+class CompleteRegistrationProvider with ChangeNotifier {
+  var _data =
+      RegistrationData(name: "", lastname: "", birthDate: null, gender: 2);
 
   void register() async {
     // TODO(uuttff8): save settings
@@ -65,8 +65,10 @@ class CompleteRegistrationPresenter {
 
   void onGender({index: int}) {
     if (index == 0) {
+      //male
       this._data.gender = 2;
     } else {
+      //female
       this._data.gender = 1;
     }
   }
@@ -114,7 +116,11 @@ class CompleteRegistrationPresenter {
     @required String lastName,
     @required DateTime birthDate,
   }) {
-    this._data = RegistrationData(name: name, lastname: lastName, birthDate: birthDate, gender: this._data.gender);
+    this._data = RegistrationData(
+        name: name,
+        lastname: lastName,
+        birthDate: birthDate,
+        gender: this._data.gender);
 
     bool isNameValid = this._isNameValid();
     bool isLastNameValid = this._isLastNameValid();

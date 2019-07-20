@@ -3,9 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'ui/login/splash.dart';
 
-
-void main() { 
-
+void main() {
   runApp(SagradoApp());
 }
 
@@ -19,6 +17,7 @@ class SagradoApp extends StatelessWidget {
       localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
         DefaultMaterialLocalizations.delegate,
         DefaultWidgetsLocalizations.delegate,
+        DefaultCupertinoLocalizations.delegate,
       ],
     );
   }

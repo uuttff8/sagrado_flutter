@@ -2,15 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:provider/provider.dart';
 import 'package:sagrado_flutter/net/net_manager.dart';
 import 'package:flutter_keychain/flutter_keychain.dart';
 import 'package:sagrado_flutter/ui/base/base.dart';
 
 import 'package:sagrado_flutter/ui/login/chose.dart';
-import 'package:sagrado_flutter/ui/login/complete_registration.dart';
+import 'package:sagrado_flutter/ui/login/complete_registration/complete_registration.dart';
+import 'package:sagrado_flutter/ui/login/complete_registration/complete_registration_provider.dart';
 
 class CodeScreen extends BaseScreen {
-  CodeScreen({Key key, @required this.phone, @required this.isNew}) : super(key: key);
+  CodeScreen({
+    Key key,
+    @required this.phone,
+    @required this.isNew,
+  }) : super(key: key);
 
   final bool isNew;
   final String phone;
@@ -90,13 +96,19 @@ class _CodeScreenState extends State<CodeScreen> {
                   ),
                   Text(
                     'ВВЕДИТЕ КОД ПОДТВЕРЖДЕНИЯ',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 26, color: Colors.white),
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 26,
+                        color: Colors.white),
                     textAlign: TextAlign.center,
                   ),
                   SizedBox(height: 30),
                   Text(
                     'Код подтверждения был выслан на указанный вами телефон',
-                    style: TextStyle(fontWeight: FontWeight.normal, fontSize: 15, color: Colors.white),
+                    style: TextStyle(
+                        fontWeight: FontWeight.normal,
+                        fontSize: 15,
+                        color: Colors.white),
                     textAlign: TextAlign.center,
                   ),
                   SizedBox(height: 40),
@@ -127,7 +139,8 @@ class _CodeScreenState extends State<CodeScreen> {
     );
   }
 
-  Future<void> confirmCode(CodeTextField codeTextField, BuildContext context) async {
+  Future<void> confirmCode(
+      CodeTextField codeTextField, BuildContext context) async {
     try {
       var response = await NetManager.shared.codeConfirmPhone(
         phone: widget.phone,
@@ -135,18 +148,25 @@ class _CodeScreenState extends State<CodeScreen> {
       );
 
       if (response.error == true) {
-        widget.showErrorDialog(context, title: 'Код', subtitle: 'Введите правильный код');
+        widget.showErrorDialog(context,
+            title: 'Код', subtitle: 'Введите правильный код');
         return;
       }
 
       print(widget.phone + '  cc   ' + codeTextField.controller.text);
 
-      FlutterKeychain.put(key: 'token', value: response.token ?? ''); // i'm not sure, but...
+      FlutterKeychain.put(
+          key: 'token', value: response.token ?? ''); // i'm not sure, but...
 
       if (widget.isNew == true) {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => CompleteRegistration()),
+          MaterialPageRoute(
+            builder: (context) => ChangeNotifierProvider(
+              builder: (context) => CompleteRegistrationProvider(),
+              child: CompleteRegistration(),
+            ),
+          ),
         );
       } else {
         Navigator.push(
@@ -172,8 +192,10 @@ class CodeTextField extends StatelessWidget {
       decoration: InputDecoration(
         hintText: 'Enter the code from SMS',
         hintStyle: TextStyle(color: Colors.white),
-        disabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white)),
-        focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white)),
+        disabledBorder:
+            OutlineInputBorder(borderSide: BorderSide(color: Colors.white)),
+        focusedBorder:
+            OutlineInputBorder(borderSide: BorderSide(color: Colors.white)),
         border: OutlineInputBorder(
           borderSide: BorderSide(
             color: Colors.white,

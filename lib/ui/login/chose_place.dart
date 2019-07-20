@@ -22,7 +22,6 @@ class ChosePlaceScreen extends StatelessWidget {
         trailingActions: <Widget>[
           FlatButton(
             child: Container(
-              //dont work as expected: icon just alignment by center
               // TODO(uuttff8): alignment icon by end
               alignment: Alignment.centerRight,
               child: Icon(
@@ -30,8 +29,7 @@ class ChosePlaceScreen extends StatelessWidget {
                 color: Colors.black,
               ),
             ),
-            onPressed: () {
-            },
+            onPressed: () {},
           ),
         ],
       ),
