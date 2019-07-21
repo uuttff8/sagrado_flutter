@@ -1,8 +1,19 @@
 class Gender {
-  Gender(this.male, this.female);
+  Gender({this.gender});
 
-  int male = 2;
-  int female = 1;
+  int gender;
+
+  factory Gender.fromJson(Map<String, dynamic> json) {
+    return Gender(
+      gender: json['sex'],
+    );
+  }
+
+  String toMap() {
+    return '''{
+      'sex': $gender,
+    }''';
+  }
 }
 
 class User {
@@ -10,7 +21,29 @@ class User {
   String email;
   PushSubscribes pushSubscribes;
   List<Profile> profiles;
-  ClubCard card;
+
+  User({this.id, this.email, this.pushSubscribes, this.profiles});
+
+  factory User.fromJson(Map<String, dynamic> json) {
+    var list = json['profiles'] as List;
+    List<Profile> profilesList = list.map((v) => Profile.fromJson(v)).toList();
+
+    return User(
+      id: json['id'],
+      email: json['email'],
+      pushSubscribes: PushSubscribes.fromJson(json['push_subscribes']),
+      profiles: profilesList,
+    );
+  }
+
+  String toString() {
+    return '''
+      'id': $id,
+      'email': $email,
+      'push_subscribes': ${pushSubscribes.toString()},
+      'profiles': ${profiles.map((v) => v.toString())},
+    }''';
+  }
 }
 
 class Profile {
@@ -19,13 +52,14 @@ class Profile {
   String birthDate;
   Gender sex;
 
-  Profile(
-      {this.service,
-      this.firstName,
-      this.lastName,
-      this.maidenName,
-      this.birthDate,
-      this.sex});
+  Profile({
+    this.service,
+    this.firstName,
+    this.lastName,
+    this.maidenName,
+    this.birthDate,
+    this.sex,
+  });
 
   factory Profile.fromJson(Map<String, dynamic> json) {
     return Profile(
@@ -34,8 +68,18 @@ class Profile {
       lastName: json['last_name'],
       maidenName: json['maiden_name'],
       birthDate: json['birth_date'],
-      sex: json['sex'],
+      sex: Gender.fromJson(json['sex']),
     );
+  }
+
+  String toString() {
+    return '''{
+      'service': $service,
+      'firstName': $firstName,
+      'lastName': $lastName,
+      'maidenName': $maidenName,
+      'sex': ${sex.toString()},
+    }''';
   }
 }
 
@@ -50,6 +94,14 @@ class PushSubscribes {
       event: json['event'],
       news: json['news'],
     );
+  }
+
+  String toString() {
+    return '''{
+      'event': $event,
+      'news': $news,
+      'action': $action,
+    }''';
   }
 }
 

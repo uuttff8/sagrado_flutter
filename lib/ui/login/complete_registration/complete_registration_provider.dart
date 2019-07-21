@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
+import 'package:sagrado_flutter/model/model.dart';
 import 'package:sagrado_flutter/net/net_manager.dart';
+import 'package:sagrado_flutter/services/user_manager.dart';
 import 'package:sagrado_flutter/ui/login/complete_registration/complete_registration.dart';
 
 class RegistrationData {
@@ -28,10 +30,23 @@ class CompleteRegistrationProvider with ChangeNotifier {
   var _data =
       RegistrationData(name: "", lastname: "", birthDate: null, gender: 2);
 
-  void register() async {
-    // TODO(uuttff8): save settings
-    NetManager.shared.saveSettings(params: getParams());
-    return;
+  CompleteRegistrationState _providerViewState = CompleteRegistrationState();
+
+  bool onRegister(User user) {
+    UserManager.instance.saveUser(user);
+    UserManager.instance.setUserDoneRegistration(true);
+
+    return true;
+  }
+
+  Future<bool> register() async {
+    User user = await NetManager.shared.saveSettings(params: getParams());
+
+    if (user.id != null) {
+      return onRegister(user);
+    }
+
+    return false;
   }
 
   Map<String, dynamic> getParams() {
@@ -40,7 +55,7 @@ class CompleteRegistrationProvider with ChangeNotifier {
     Map<String, bool> pushSettings = {
       "event": true,
       "news": true,
-      "news": true,
+      "action": true,
     };
 
     Map<String, String> userMap = {

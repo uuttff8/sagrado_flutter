@@ -41,6 +41,27 @@ class Prefs {
   Future<bool> getIsSubOnEvents() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var subOnEvents = prefs.getBool(_PrefsKeys.SUB_ON_EVENTS);
-    return  subOnEvents;
+    return subOnEvents;
+  }
+
+  Future<String> getUser() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String user = prefs.getString(_PrefsKeys.USER ?? "");
+    return user;
+  }
+
+  void setUser({String user}) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_PrefsKeys.USER, user.toString());
+  }
+
+  Future<bool> getRegistrationPassed() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(_PrefsKeys.IS_REGISTERATION_PASSED ?? false);
+  }
+
+  void setRegistrationPassed(bool value) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_PrefsKeys.IS_REGISTERATION_PASSED, value);
   }
 }

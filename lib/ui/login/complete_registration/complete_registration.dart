@@ -1,21 +1,22 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:sagrado_flutter/ui/base/base_screen.dart';
+import 'package:sagrado_flutter/model/user.dart';
+import 'package:sagrado_flutter/net/net_manager.dart';
+import 'package:sagrado_flutter/services/user_manager.dart';
+import 'package:sagrado_flutter/ui/login/add_card.dart';
 import 'package:sagrado_flutter/ui/login/complete_registration/complete_registration_provider.dart';
 
 class CompleteRegistration extends StatefulWidget {
   CompleteRegistration({Key key}) : super(key: key);
 
   @override
-  _CompleteRegistrationState createState() => _CompleteRegistrationState();
+  CompleteRegistrationState createState() => CompleteRegistrationState();
 }
 
-class _CompleteRegistrationState extends State<CompleteRegistration> {
+class CompleteRegistrationState extends State<CompleteRegistration> {
   DateTime date = DateTime.now();
   int sharedValue = 0;
   final Map<int, Widget> logoWidgets = {
@@ -150,7 +151,7 @@ class _CompleteRegistrationState extends State<CompleteRegistration> {
         ),
       );
 
-  void platformCheckFields(CompleteRegistrationProvider provider) {
+  void platformCheckFields(CompleteRegistrationProvider provider) async {
     bool isCheck = provider.checkFields(
       name: nameController.text,
       lastName: lastNameController.text,
@@ -158,7 +159,18 @@ class _CompleteRegistrationState extends State<CompleteRegistration> {
     );
 
     if (isCheck == true) {
-      provider.register();
+      provider.register().then((bool v) {
+        if (v) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => AddCardScreen(
+                forMenu: false,
+              ),
+            ),
+          );
+        }
+      });
     } else {
       _showErrorDialog(context, title: "Заполните все поля");
     }

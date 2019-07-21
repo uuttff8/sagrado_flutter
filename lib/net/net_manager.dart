@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:dio/dio.dart';
 import 'package:flutter_keychain/flutter_keychain.dart';
 import 'package:http/http.dart' as http;
 import 'package:sagrado_flutter/model/model.dart';
@@ -82,29 +83,30 @@ class NetManager {
   }
 
   Future<User> saveSettings({Map<String, dynamic> params}) async {
-    Uri uri = Uri.http(baseUrl, '/user/settings', params);
-    final response = await http.post(
-      uri,
-      headers: await headers,
-      body: json.encode(params),
-      encoding: utf8,
+    Dio dio = new Dio();
+
+    final response = await dio.post(
+      'http://app.sagradocorp.org/user/settings',
+      queryParameters: params,
+      options: Options(
+        headers: await headers,
+        responseType: ResponseType.plain,
+      ),
+      data: json.encode(params),
     );
 
     _printData(
-      url: baseUrl + '/reg',
-      body: response.body,
-      headers: headers,
+      url: baseUrl + '/user/settings',
+      body: response.data,
       statusCode: response.statusCode,
+      headers: headers,
     );
 
     if (response.statusCode == 200) {
-      return parser.parseSaveSettings(response.body);
+      return parser.parseSaveSettings(response.data.toString());
     } else {
       throw Exception('try later');
     }
-
-    var user = User();
-    return user;
   }
 }
 
