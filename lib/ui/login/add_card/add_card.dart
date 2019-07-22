@@ -1,21 +1,35 @@
+export 'add_card_provider.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
+import 'package:provider/provider.dart';
+import 'package:sagrado_flutter/ui/login/chose.dart';
+import 'add_card_provider.dart';
 
-class AddCardScreen extends StatelessWidget {
-  const AddCardScreen({Key key, @required this.forMenu})
+class AddCardScreen extends StatefulWidget {
+  AddCardScreen({Key key, this.forMenu})
       : assert(forMenu != null),
         super(key: key);
 
   final bool forMenu;
+
+  @override
+  AddCardScreenState createState() => AddCardScreenState();
+}
+
+class AddCardScreenState extends State<AddCardScreen> {
   @override
   Widget build(BuildContext context) {
-    TextEditingController fioController = TextEditingController();
-    TextEditingController cardController = TextEditingController();
+    TextEditingController nameField = TextEditingController();
+    TextEditingController cardNumberField = TextEditingController();
 
-    String textHeader = !forMenu
+    String textHeader = !widget.forMenu
         ? 'Добавьте карту лояльности наших проектов. Если у Вас ещё нет карты Sagrado Loyalty, то просто нажмите "Далее"'
         : "Добавьте карту Sagrado Loyalty.";
+
+    AddCardProvider provider = Provider.of<AddCardProvider>(context);
+
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).requestFocus(new FocusNode());
@@ -33,18 +47,20 @@ class AddCardScreen extends StatelessWidget {
                   ),
                 ),
                 AddCardTextField(
-                  fioController: fioController,
+                  fioController: nameField,
                   text: 'ФИО',
                 ),
                 AddCardTextField(
-                  fioController: cardController,
+                  fioController: cardNumberField,
                   text: 'Номер карты',
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 20.0),
                   child: PlatformButton(
                     child: Text('Далее'),
-                    onPressed: () {},
+                    onPressed: () {
+                      validate(provider);
+                    },
                   ),
                 ),
               ],
@@ -62,6 +78,30 @@ class AddCardScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void navigate() {
+    if (!this.widget.forMenu) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => ChoseScreen()),
+      );
+    } else {
+      Navigator.pop(context);
+    }
+  }
+
+  void validate(AddCardProvider provider,
+      {TextEditingController cardNumberField,
+      TextEditingController nameField}) {
+    provider.validate(
+        number: cardNumberField.text ?? "",
+        name: (nameField.text ?? ""),
+        forMenu: this.widget.forMenu);
+  }
+
+  void onSkip() {
+    navigate();
   }
 }
 

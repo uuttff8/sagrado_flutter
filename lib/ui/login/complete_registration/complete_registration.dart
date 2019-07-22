@@ -3,10 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:sagrado_flutter/model/user.dart';
-import 'package:sagrado_flutter/net/net_manager.dart';
-import 'package:sagrado_flutter/services/user_manager.dart';
-import 'package:sagrado_flutter/ui/login/add_card.dart';
+import 'package:sagrado_flutter/ui/login/add_card/add_card.dart';
 import 'package:sagrado_flutter/ui/login/complete_registration/complete_registration_provider.dart';
 
 class CompleteRegistration extends StatefulWidget {
@@ -164,9 +161,9 @@ class CompleteRegistrationState extends State<CompleteRegistration> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => AddCardScreen(
-                forMenu: false,
-              ),
+              builder: (context) => ChangeNotifierProvider(
+                  builder: (_) => AddCardProvider(),
+                  child: AddCardScreen(forMenu: false)),
             ),
           );
         }

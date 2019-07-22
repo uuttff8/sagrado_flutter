@@ -1,30 +1,26 @@
+// class KeychainManager {
+//   KeychainManager._();
+//   static final KeychainManager shared = KeychainManager._();
 
+//   String _token = "TOKEN";
 
-import 'package:flutter_keychain/flutter_keychain.dart';
+//   String _error = "ERROR";
 
-class KeychainManager {
-  KeychainManager._();
-  static final KeychainManager shared = KeychainManager._();
+//   FlutterKeychain _keychain;
 
-  String _token = "TOKEN";
+//   void auth({token: String}) {
+//     this._token = token;
+//   }
 
-  String _error = "ERROR";
+//   void logout() {
+//     this._token = "";
+//   }
 
-  FlutterKeychain _keychain;
+//   bool _isTokenValid()  {
+//     // return this._token != this._error
+//   }
 
-  void auth({token: String}) {
-    this._token = token;
-  }
+//   String _setToken() {
 
-  void logout() {
-    this._token = "";
-  }
-
-  bool _isTokenValid()  {
-    // return this._token != this._error
-  }
-
-  String _setToken() {
-
-  }
-}
+//   }
+// }
