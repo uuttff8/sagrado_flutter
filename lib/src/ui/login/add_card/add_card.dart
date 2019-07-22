@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:provider/provider.dart';
-import 'package:sagrado_flutter/ui/login/chose.dart';
+import 'package:sagrado_flutter/src/ui/login/chose.dart';
 import 'add_card_provider.dart';
 
 class AddCardScreen extends StatefulWidget {
-  AddCardScreen({Key key, this.forMenu})
+  AddCardScreen({Key key, @required this.forMenu})
       : assert(forMenu != null),
         super(key: key);
 
@@ -80,28 +80,15 @@ class AddCardScreenState extends State<AddCardScreen> {
     );
   }
 
-  void navigate() {
-    if (!this.widget.forMenu) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => ChoseScreen()),
-      );
-    } else {
-      Navigator.pop(context);
-    }
-  }
-
   void validate(AddCardProvider provider,
       {TextEditingController cardNumberField,
       TextEditingController nameField}) {
     provider.validate(
-        number: cardNumberField.text ?? "",
-        name: (nameField.text ?? ""),
-        forMenu: this.widget.forMenu);
-  }
-
-  void onSkip() {
-    navigate();
+      context,
+      number: cardNumberField?.text ?? "",
+      name: (nameField?.text ?? ""),
+      forMenu: widget.forMenu,
+    );
   }
 }
 

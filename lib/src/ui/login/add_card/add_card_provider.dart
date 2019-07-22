@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sagrado_flutter/ui/login/add_card/add_card.dart';
+import 'package:sagrado_flutter/src/ui/login/chose.dart';
 
 class AddCardData {
   AddCardData({@required this.number, @required this.name});
@@ -12,9 +12,11 @@ class AddCardProvider with ChangeNotifier {
   AddCardProvider();
 
   var _data = AddCardData(name: "", number: "");
-  AddCardScreenState _providerView = AddCardScreenState();
 
-  void validate({String number, String name, bool forMenu}) {
+  void validate(BuildContext context,
+      {@required String number,
+      @required String name,
+      @required bool forMenu}) {
     this._data = AddCardData(number: number, name: name);
 
     if (number.isNotEmpty && name.isNotEmpty) {
@@ -23,8 +25,19 @@ class AddCardProvider with ChangeNotifier {
       if (forMenu) {
         throw Exception("Заполните все поля");
       } else {
-        _providerView.onSkip();
+        navigate(context, forMenu: forMenu);
       }
+    }
+  }
+
+  void navigate(BuildContext context, {@required bool forMenu}) {
+    if (!forMenu) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => ChoseScreen()),
+      );
+    } else {
+      Navigator.pop(context);
     }
   }
 

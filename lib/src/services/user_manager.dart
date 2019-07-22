@@ -1,6 +1,6 @@
 import 'dart:convert';
-import 'package:sagrado_flutter/model/model.dart';
-import 'package:sagrado_flutter/services/prefs.dart';
+import 'package:sagrado_flutter/src/model/model.dart';
+import 'package:sagrado_flutter/src/services/prefs.dart';
 
 class UserManager {
   UserManager._();

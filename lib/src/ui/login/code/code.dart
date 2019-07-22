@@ -3,13 +3,13 @@ import 'package:flutter/services.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
-import 'package:sagrado_flutter/net/net_manager.dart';
+import 'package:sagrado_flutter/src/net/net_manager.dart';
 import 'package:flutter_keychain/flutter_keychain.dart';
-import 'package:sagrado_flutter/ui/base/base.dart';
+import 'package:sagrado_flutter/src/ui/base/base.dart';
 
-import 'package:sagrado_flutter/ui/login/chose.dart';
-import 'package:sagrado_flutter/ui/login/complete_registration/complete_registration.dart';
-import 'package:sagrado_flutter/ui/login/complete_registration/complete_registration_provider.dart';
+import 'package:sagrado_flutter/src/ui/login/chose.dart';
+import 'package:sagrado_flutter/src/ui/login/complete_registration/complete_registration.dart';
+import 'package:sagrado_flutter/src/ui/login/complete_registration/complete_registration_provider.dart';
 
 class CodeScreen extends BaseScreen {
   CodeScreen({
@@ -121,8 +121,8 @@ class _CodeScreenState extends State<CodeScreen> {
                       'Выслать код повторно',
                       style: TextStyle(color: Colors.blue, fontSize: 15),
                     ),
-                    onPressed: () {
-                      // TODO (uuttff8): create resms
+                    onPressed: () async {
+                      resms(widget.phone);
                     },
                     android: (context) {
                       return MaterialRaisedButtonData(
@@ -137,6 +137,14 @@ class _CodeScreenState extends State<CodeScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> resms(String phone) async {
+    try {
+      var response = await NetManager.shared.signInPhone(phone: phone);
+    } catch (e) {
+      widget.showErrorDialog(context, title: 'Что-то пошло не так');
+    }
   }
 
   Future<void> confirmCode(

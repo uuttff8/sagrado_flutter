@@ -5,8 +5,8 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter_keychain/flutter_keychain.dart';
 import 'package:http/http.dart' as http;
-import 'package:sagrado_flutter/model/model.dart';
-import 'package:sagrado_flutter/net/constants.dart';
+import 'package:sagrado_flutter/src/model/model.dart';
+import 'package:sagrado_flutter/src/net/constants.dart';
 
 class NetManager {
   static final NetManager shared = NetManager._internal();

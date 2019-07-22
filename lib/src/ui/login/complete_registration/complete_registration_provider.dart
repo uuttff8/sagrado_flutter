@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
-import 'package:sagrado_flutter/model/model.dart';
-import 'package:sagrado_flutter/net/net_manager.dart';
-import 'package:sagrado_flutter/services/user_manager.dart';
-import 'package:sagrado_flutter/ui/login/complete_registration/complete_registration.dart';
+import 'package:sagrado_flutter/src/model/model.dart';
+import 'package:sagrado_flutter/src/net/net_manager.dart';
+import 'package:sagrado_flutter/src/services/user_manager.dart';
 
 class RegistrationData {
   RegistrationData({
@@ -29,8 +28,6 @@ class RegistrationData {
 class CompleteRegistrationProvider with ChangeNotifier {
   var _data =
       RegistrationData(name: "", lastname: "", birthDate: null, gender: 2);
-
-  CompleteRegistrationState _providerViewState = CompleteRegistrationState();
 
   bool onRegister(User user) {
     UserManager.instance.saveUser(user);

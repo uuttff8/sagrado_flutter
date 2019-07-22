@@ -4,7 +4,8 @@ import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 abstract class BaseScreen extends StatefulWidget {
   BaseScreen({Key key}) : super(key: key);
 
-  void showErrorDialog(BuildContext context, {String title, String subtitle}) {
+  void showErrorDialog(BuildContext context,
+      {String title, String subtitle = ""}) {
     showPlatformDialog(
       context: context,
       builder: (_) => PlatformAlertDialog(

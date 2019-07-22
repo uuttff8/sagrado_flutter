@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:flutter/services.dart';
-import 'package:sagrado_flutter/net/net_manager.dart';
-import 'package:sagrado_flutter/ui/login/code/code.dart';
-import 'package:sagrado_flutter/widgets/auth.dart';
+import 'package:sagrado_flutter/src/net/net_manager.dart';
+import 'package:sagrado_flutter/src/ui/login/code/code.dart';
+import 'package:sagrado_flutter/src/widgets/auth.dart';
 import 'package:flutter/cupertino.dart';
 
 class SplashScreen extends StatefulWidget {

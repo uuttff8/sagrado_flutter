@@ -3,8 +3,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:sagrado_flutter/ui/login/add_card/add_card.dart';
-import 'package:sagrado_flutter/ui/login/complete_registration/complete_registration_provider.dart';
+import 'package:sagrado_flutter/src/ui/login/add_card/add_card.dart';
+import 'package:sagrado_flutter/src/ui/login/complete_registration/complete_registration_provider.dart';
 
 class CompleteRegistration extends StatefulWidget {
   CompleteRegistration({Key key}) : super(key: key);
