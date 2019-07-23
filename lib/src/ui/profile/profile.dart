@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:provider/provider.dart';
 import 'package:sagrado_flutter/src/ui/history/history.dart';
+import 'package:sagrado_flutter/src/ui/settings/settings.dart';
+import 'package:sagrado_flutter/src/ui/settings/settings_provider.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({Key key}) : super(key: key);
@@ -165,7 +168,15 @@ class ProfileAppBar extends StatelessWidget {
             padding: EdgeInsets.zero,
             child: Icon(Icons.settings),
             onPressed: () {
-              print('settings button pressed');
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ChangeNotifierProvider(
+                    builder: (_) => SettingsProvider(),
+                    child: SettingsScreen(),
+                  ),
+                ),
+              );
             },
           ),
         ],

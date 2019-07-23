@@ -120,7 +120,7 @@ class _NetManagerParse {
   }
 
   User parseSaveSettings(String responseBody) {
-    return User.fromJson(json.decode(responseBody));
+    return UserStatusResponse.fromJson(json.decode(responseBody)).user;
   }
 }
 

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:provider/provider.dart';
+import 'package:sagrado_flutter/src/ui/bottom_navigation/bottom_navigation.dart';
 
 import 'package:sagrado_flutter/src/ui/login/chose_place/chose_place.dart';
 import 'package:sagrado_flutter/src/ui/login/chose_place/chose_place_provider.dart';
@@ -48,11 +49,14 @@ class ChoseScreen extends StatelessWidget {
                 ),
                 onPressed: () {
                   Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => ChangeNotifierProvider(
-                              builder: (_) => ChosePlaceNotifier(),
-                              child: ChosePlaceScreen())));
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ChangeNotifierProvider(
+                        builder: (context) => ChosePlaceNotifier(),
+                        child: ChosePlaceScreen(),
+                      ),
+                    ),
+                  );
                 },
               ),
               ChoseButton(
@@ -62,8 +66,17 @@ class ChoseScreen extends StatelessWidget {
                       letterSpacing: 1, color: Colors.blueAccent[700]),
                 ),
                 onPressed: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => ProfileScreen()));
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => WillPopScope(
+                        onWillPop: () async {
+                          return true;
+                        },
+                        child: CustomBottomNavigation(),
+                      ),
+                    ),
+                  );
                 },
               ),
             ],

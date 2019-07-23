@@ -1,18 +1,26 @@
-class Gender {
-  Gender({this.gender});
+class UserStatusResponse {
+  bool status;
+  String token, pushToken, osType;
+  int userId;
+  User user;
 
-  int gender;
+  UserStatusResponse(
+      {this.status,
+      this.token,
+      this.pushToken,
+      this.osType,
+      this.userId,
+      this.user});
 
-  factory Gender.fromJson(Map<String, dynamic> json) {
-    return Gender(
-      gender: json['sex'],
+  factory UserStatusResponse.fromJson(Map<String, dynamic> json) {
+    return UserStatusResponse(
+      status: json['status'],
+      token: json['token'],
+      pushToken: json['push_token'],
+      osType: json['os_type'],
+      userId: json['user_id'],
+      user: User.fromJson(json['user']),
     );
-  }
-
-  String toMap() {
-    return '''{
-      'sex': $gender,
-    }''';
   }
 }
 
@@ -50,16 +58,14 @@ class Profile {
   String service, firstName, lastName;
   String maidenName;
   String birthDate;
-  Gender sex;
+  //Gender sex;
 
-  Profile({
-    this.service,
-    this.firstName,
-    this.lastName,
-    this.maidenName,
-    this.birthDate,
-    this.sex,
-  });
+  Profile(
+      {this.service,
+      this.firstName,
+      this.lastName,
+      this.maidenName,
+      this.birthDate});
 
   factory Profile.fromJson(Map<String, dynamic> json) {
     return Profile(
@@ -68,7 +74,7 @@ class Profile {
       lastName: json['last_name'],
       maidenName: json['maiden_name'],
       birthDate: json['birth_date'],
-      sex: Gender.fromJson(json['sex']),
+      //sex: Gender.fromJson(json['sex']),
     );
   }
 
@@ -77,8 +83,7 @@ class Profile {
       'service': $service,
       'firstName': $firstName,
       'lastName': $lastName,
-      'maidenName': $maidenName,
-      'sex': ${sex.toString()},
+      'maidenName': $maidenName,э
     }''';
   }
 }
@@ -101,6 +106,24 @@ class PushSubscribes {
       'event': $event,
       'news': $news,
       'action': $action,
+    }''';
+  }
+}
+
+class Gender {
+  Gender({this.gender});
+
+  int gender;
+
+  factory Gender.fromJson(Map<String, dynamic> json) {
+    return Gender(
+      gender: json['sex'],
+    );
+  }
+
+  String toMap() {
+    return '''{
+      'sex': $gender,
     }''';
   }
 }

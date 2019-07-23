@@ -67,10 +67,12 @@ class CompleteRegistrationProvider with ChangeNotifier {
     };
 
     params = {
-      "profileMap": profileMap,
+      "profiles": profileMap,
       "push_subscribes": pushSettings,
       "push_token": "",
     };
+
+    debugPrint(params.toString());
 
     return params;
   }
