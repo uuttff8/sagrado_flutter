@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import 'package:sagrado_flutter/src/net/net_manager.dart';
 import 'package:sagrado_flutter/src/ui/login/code/code.dart';
+import 'package:sagrado_flutter/src/ui/login/splash/splash_provider.dart';
 import 'package:sagrado_flutter/src/widgets/auth.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -35,6 +37,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
+    SplashProvider provider = Provider.of<SplashProvider>(context);
     SystemChrome.setSystemUIOverlayStyle(
         SystemUiOverlayStyle(statusBarColor: Colors.black));
     AuthTextField authTextField = AuthTextField(controller: controller);
@@ -104,7 +107,7 @@ class _SplashScreenState extends State<SplashScreen> {
                                 ),
                               ),
                               color: Color(0xff3b5999),
-                              onPressed: initiateFacebookLogin,
+                              onPressed: provider.initiateFacebookLogin,
                             ),
                             SizedBox(height: 50),
                             SizedBox(
