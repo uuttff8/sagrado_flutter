@@ -10,8 +10,8 @@ class SalesScreen extends StatefulWidget {
 class _SalesScreenState extends State<SalesScreen> {
   @override
   Widget build(BuildContext context) {
-    PageController controller = PageController(initialPage: 0);
-    int currentPageValue = 0;
+    // PageController controller = PageController(initialPage: 0);
+    // int currentPageValue = 0;
 
     return PlatformScaffold(
       body: SafeArea(

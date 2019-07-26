@@ -17,7 +17,6 @@ class _SplashScreenState extends State<SplashScreen> {
       MaskedTextController(mask: '+7(000)-000-0000');
 
   Image _imageAsset = Image.asset('assets/images/checkLogin.png');
-
   bool _isAgree = true;
 
   void checkAgreement() {
@@ -39,7 +38,6 @@ class _SplashScreenState extends State<SplashScreen> {
     SystemChrome.setSystemUIOverlayStyle(
         SystemUiOverlayStyle(statusBarColor: Colors.black));
     AuthTextField authTextField = AuthTextField(controller: controller);
-
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).requestFocus(new FocusNode());
@@ -62,7 +60,11 @@ class _SplashScreenState extends State<SplashScreen> {
                         minHeight: viewportConstraints.maxHeight),
                     child: SafeArea(
                       child: Container(
-                        padding: const EdgeInsets.only(top: 40.0),
+                        padding: EdgeInsets.only(
+                          top: MediaQuery.of(context).size.height > 800
+                              ? 100
+                              : 40,
+                        ),
                         alignment: Alignment.topCenter,
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.start,
@@ -94,19 +96,6 @@ class _SplashScreenState extends State<SplashScreen> {
                             SizedBox(height: 40),
                             AuthButton(
                               Text(
-                                'Вконтакте',
-                                style: TextStyle(
-                                    fontSize: 15,
-                                    letterSpacing: 1.5,
-                                    color: Colors.white),
-                              ),
-                              color: Color(
-                                0xff4c75a3,
-                              ),
-                              onPressed: () {},
-                            ),
-                            AuthButton(
-                              Text(
                                 'Facebook',
                                 style: TextStyle(
                                   fontSize: 15,
@@ -115,7 +104,7 @@ class _SplashScreenState extends State<SplashScreen> {
                                 ),
                               ),
                               color: Color(0xff3b5999),
-                              onPressed: () {},
+                              onPressed: initiateFacebookLogin,
                             ),
                             SizedBox(height: 50),
                             SizedBox(

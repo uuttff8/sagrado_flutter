@@ -6,7 +6,6 @@ import 'package:sagrado_flutter/src/ui/bottom_navigation/bottom_navigation.dart'
 
 import 'package:sagrado_flutter/src/ui/login/chose_place/chose_place.dart';
 import 'package:sagrado_flutter/src/ui/login/chose_place/chose_place_provider.dart';
-import 'package:sagrado_flutter/src/ui/profile/profile.dart';
 
 class ChoseScreen extends StatelessWidget {
   const ChoseScreen({Key key}) : super(key: key);

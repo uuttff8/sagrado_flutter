@@ -141,7 +141,7 @@ class _CodeScreenState extends State<CodeScreen> {
 
   Future<void> resms(String phone) async {
     try {
-      var response = await NetManager.shared.signInPhone(phone: phone);
+      await NetManager.shared.signInPhone(phone: phone);
     } catch (e) {
       widget.showErrorDialog(context, title: 'Что-то пошло не так');
     }
