@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
+import 'package:provider/provider.dart';
+import 'package:sagrado_flutter/src/ui/login/splash/splash_provider.dart';
 import 'src/ui/login/splash/splash.dart';
 
 void main() {
@@ -13,7 +15,10 @@ class SagradoApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PlatformApp(
-      home: SplashScreen(),
+      home: ChangeNotifierProvider(
+        builder: (_) => SplashProvider(),
+        child: SplashScreen(),
+      ),
       localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
         DefaultMaterialLocalizations.delegate,
         DefaultWidgetsLocalizations.delegate,
