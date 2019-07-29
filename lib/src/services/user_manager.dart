@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter_keychain/flutter_keychain.dart';
+import 'package:meta/meta.dart';
 import 'package:sagrado_flutter/src/model/model.dart';
 import 'package:sagrado_flutter/src/services/prefs.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -14,10 +15,21 @@ class UserManager {
     Prefs.shared.setUser(user: jsonData);
   }
 
-  User getUser() {}
+  Future<User> getUser() async {
+    String temp = await Prefs.shared.getUser();
+    return User.fromJson(json.decode(temp));
+  }
+
+  Future<bool> isRegistrationDone() async {
+    return await Prefs.shared.getRegistrationPassed();
+  }
 
   void setUserDoneRegistration(bool value) {
     Prefs.shared.setRegistrationPassed(value);
+  }
+
+  void auth({@required String token}) {
+    FlutterKeychain.put(key: 'token', value: token);
   }
 
   void logout() async {

@@ -1,30 +1,56 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
-import 'package:http/http.dart' as http;
+import 'package:sagrado_flutter/src/model/model.dart';
+import 'package:sagrado_flutter/src/net/net_manager.dart';
+import 'package:sagrado_flutter/src/services/social_manager.dart';
+import 'package:sagrado_flutter/src/ui/login/splash/splash.dart';
 
 class SplashProvider with ChangeNotifier {
+  var socialManager = SocialManager();
   var facebookLogin = FacebookLogin();
-  void initiateFacebookLogin() async {
-    facebookLogin.loginBehavior = FacebookLoginBehavior.webViewOnly;
-    var facebookLoginResult =
-        await facebookLogin.logInWithReadPermissions(['email', 'user_photos']);
 
-    switch (facebookLoginResult.status) {
-      case FacebookLoginStatus.error:
-        print('some error');
-        break;
-      case FacebookLoginStatus.cancelledByUser:
-        print('cancelled by user');
-        break;
-      case FacebookLoginStatus.loggedIn:
-        var graphResponse = await http.get(
-            'https://graph.facebook.com/v2.12/me?fields=name,first_name,last_name,email,picture.height(200)&access_token=${facebookLoginResult.accessToken.token}');
+  SplashScreenState _providerView = SplashScreenState();
 
-        var profile = json.decode(graphResponse.body);
-        print(profile.toString());
-        print(facebookLoginResult.accessToken.token);
-        break;
-    }
+  void initiateFacebookLogin() {
+    loginSocial(social: SocialType.facebook);
+  }
+
+  void loginSocial({SocialType social}) {
+    socialManager.authSocial(
+      social: social,
+      callback: (SocialCallback callback) {
+        if (callback.data != null) {
+          print('BLBLBLLBLBLBLBL');
+          loginAfterSocial(
+            social: social,
+            userId: callback.data.userId,
+            socialToken: callback.data.token,
+            metaUser: callback.data.metaUser,
+          );
+        } else {
+          print('LALLLALALALAL');
+          if (callback.error != null) {/*showError(text: error) }*/}
+        }
+      },
+    );
+  }
+
+  void loginAfterSocial({
+    SocialType social,
+    String userId,
+    String socialToken,
+    metaUser: MetaUser,
+  }) async {
+    String socialString = social.toString().split('.').last;
+
+    var response = await NetManager.shared.getToken(
+      social: socialString, // fuck that shit
+      userId: userId ?? "",
+      pushToken: null,
+      socialToken: socialToken,
+      metaUser: metaUser,
+    );
+
+    _providerView.onSocialLogin(data: response);
   }
 }

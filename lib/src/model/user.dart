@@ -24,13 +24,28 @@ class UserStatusResponse {
   }
 }
 
+class AuthResponse {
+  String token;
+  User user;
+
+  AuthResponse({this.token, this.user});
+
+  factory AuthResponse.fromJson(Map<String, dynamic> json) {
+    return AuthResponse(
+      token: json['token'],
+      user: User.fromJson(json['user']),
+    );
+  }
+}
+
 class User {
   int id;
   String email;
   PushSubscribes pushSubscribes;
   List<Profile> profiles;
+  ClubCard card;
 
-  User({this.id, this.email, this.pushSubscribes, this.profiles});
+  User({this.id, this.email, this.pushSubscribes, this.profiles, this.card});
 
   factory User.fromJson(Map<String, dynamic> json) {
     var list = json['profiles'] as List;
@@ -41,6 +56,7 @@ class User {
       email: json['email'],
       pushSubscribes: PushSubscribes.fromJson(json['push_subscribes']),
       profiles: profilesList,
+      card: json['card'],
     );
   }
 
@@ -51,6 +67,22 @@ class User {
       'push_subscribes': ${pushSubscribes.toString()},
       'profiles': ${profiles.map((v) => v.toString())},
     }''';
+  }
+
+  bool isRegistered() {
+    if (profiles.isNotEmpty) {
+      if (card != null) {
+        return true;
+      } else {
+        // wtf formatting
+        return profiles
+                .map((Profile prof) => prof.birthDate != null)
+                .contains(true) ==
+            true;
+      }
+    } else {
+      return false;
+    }
   }
 }
 

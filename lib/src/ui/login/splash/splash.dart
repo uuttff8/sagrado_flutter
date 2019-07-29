@@ -3,18 +3,24 @@ import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:sagrado_flutter/src/model/model.dart';
 import 'package:sagrado_flutter/src/net/net_manager.dart';
+import 'package:sagrado_flutter/src/services/user_manager.dart';
 import 'package:sagrado_flutter/src/ui/login/code/code.dart';
+import 'package:sagrado_flutter/src/ui/login/complete_registration/complete_registration.dart';
+import 'package:sagrado_flutter/src/ui/login/complete_registration/complete_registration_provider.dart';
 import 'package:sagrado_flutter/src/ui/login/splash/splash_provider.dart';
+import 'package:sagrado_flutter/src/ui/profile/profile.dart';
+import 'package:sagrado_flutter/src/ui/profile/profile_provider.dart';
 import 'package:sagrado_flutter/src/widgets/auth.dart';
 import 'package:flutter/cupertino.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
-  _SplashScreenState createState() => _SplashScreenState();
+  SplashScreenState createState() => SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> {
+class SplashScreenState extends State<SplashScreen> {
   final MaskedTextController controller =
       MaskedTextController(mask: '+7(000)-000-0000');
 
@@ -156,6 +162,31 @@ class _SplashScreenState extends State<SplashScreen> {
         ),
       ),
     );
+  }
+
+  void onSocialLogin({AuthResponse data}) {
+    UserManager.instance.auth(token: data.token);
+    if (data.user.isRegistered()) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ChangeNotifierProvider(
+            builder: (BuildContext context) => ProfileProvider(),
+            child: ProfileScreen(),
+          ),
+        ),
+      );
+    } else {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ChangeNotifierProvider(
+            builder: (BuildContext context) => CompleteRegistrationProvider(),
+            child: CompleteRegistration(),
+          ),
+        ),
+      );
+    }
   }
 }
 

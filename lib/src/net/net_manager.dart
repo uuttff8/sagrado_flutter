@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:sagrado_flutter/src/services/social_manager.dart' show MetaUser;
 import 'package:dio/dio.dart';
 import 'package:flutter_keychain/flutter_keychain.dart';
 import 'package:http/http.dart' as http;
@@ -18,6 +19,7 @@ class NetManager {
   _NetManagerParse parser = _NetManagerParse();
 
   final String baseUrl = API_LINK_OLD;
+  final String baseUrlHttp = API_LINK_OLD_HTTP;
   static Future<String> get token async => FlutterKeychain.get(key: 'token');
 
   static Future<Map<String, String>> get headers async => {
@@ -86,7 +88,7 @@ class NetManager {
     Dio dio = new Dio();
 
     final response = await dio.post(
-      'http://app.sagradocorp.org/user/settings',
+      '$baseUrlHttp/user/settings',
       queryParameters: params,
       options: Options(
         headers: await headers,
@@ -108,6 +110,49 @@ class NetManager {
       throw Exception('try later');
     }
   }
+
+  Future<AuthResponse> getToken({
+    String social,
+    String userId,
+    String pushToken,
+    String socialToken,
+    MetaUser metaUser,
+  }) async {
+    final Dio dio = new Dio();
+
+    Map<String, String> params = {
+      'user_id': userId,
+      'token': socialToken,
+      'push_token': pushToken ?? "",
+      'os_type': 'ios',
+      'first_name': metaUser.userName,
+      'last_name': metaUser.lastName,
+      'email': metaUser.email,
+    };
+
+    final response = await dio.post(
+      '$baseUrlHttp/auth/$social',
+      queryParameters: params,
+      options: Options(
+        headers: await headers,
+        responseType: ResponseType.plain,
+      ),
+      data: json.encode(params),
+    );
+
+    _printData(
+      url: baseUrl + '/auth/$social',
+      body: response.data,
+      statusCode: response.statusCode,
+      headers: headers,
+    );
+
+    if (response.statusCode == 200) {
+      return parser.parseGetToken(response.data.toString());
+    } else {
+      throw Exception('try later');
+    }
+  }
 }
 
 class _NetManagerParse {
@@ -121,6 +166,10 @@ class _NetManagerParse {
 
   User parseSaveSettings(String responseBody) {
     return UserStatusResponse.fromJson(json.decode(responseBody)).user;
+  }
+
+  AuthResponse parseGetToken(String responseBody) {
+    return AuthResponse.fromJson(json.decode(responseBody));
   }
 }
 
