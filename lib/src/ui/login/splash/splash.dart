@@ -17,10 +17,10 @@ import 'package:flutter/cupertino.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
-  SplashScreenState createState() => SplashScreenState();
+  _SplashScreenState createState() => _SplashScreenState();
 }
 
-class SplashScreenState extends State<SplashScreen> {
+class _SplashScreenState extends State<SplashScreen> {
   final MaskedTextController controller =
       MaskedTextController(mask: '+7(000)-000-0000');
 

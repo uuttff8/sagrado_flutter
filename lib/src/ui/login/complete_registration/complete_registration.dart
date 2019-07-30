@@ -3,11 +3,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:sagrado_flutter/src/services/social_manager.dart';
 import 'package:sagrado_flutter/src/ui/login/add_card/add_card.dart';
 import 'package:sagrado_flutter/src/ui/login/complete_registration/complete_registration_provider.dart';
 
 class CompleteRegistration extends StatefulWidget {
-  CompleteRegistration({Key key}) : super(key: key);
+  final MetaUser metaUser;
+
+  CompleteRegistration({Key key, this.metaUser}) : super(key: key);
 
   @override
   CompleteRegistrationState createState() => CompleteRegistrationState();
@@ -27,6 +30,11 @@ class CompleteRegistrationState extends State<CompleteRegistration> {
   @override
   Widget build(BuildContext context) {
     var provider = Provider.of<CompleteRegistrationProvider>(context);
+
+    if (widget.metaUser.userName != null && widget.metaUser.lastName != null) {
+      nameController.text = widget.metaUser.userName;
+      lastNameController.text = widget.metaUser.lastName;
+    }
 
     return GestureDetector(
       onTap: () {
@@ -162,8 +170,9 @@ class CompleteRegistrationState extends State<CompleteRegistration> {
             context,
             MaterialPageRoute(
               builder: (context) => ChangeNotifierProvider(
-                  builder: (_) => AddCardProvider(),
-                  child: AddCardScreen(forMenu: false)),
+                builder: (_) => AddCardProvider(),
+                child: AddCardScreen(forMenu: false),
+              ),
             ),
           );
         }

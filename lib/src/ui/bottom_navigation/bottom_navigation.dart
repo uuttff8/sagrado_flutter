@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:sagrado_flutter/src/model/model.dart';
+import 'package:sagrado_flutter/src/services/social_manager.dart';
 import 'package:sagrado_flutter/src/ui/about/about.dart';
 
 import 'package:sagrado_flutter/src/ui/events/events.dart';
@@ -33,7 +35,10 @@ String _tabItemName(TabItem tabItem) {
 }
 
 class CustomBottomNavigation extends StatefulWidget {
-  CustomBottomNavigation({Key key}) : super(key: key);
+  CustomBottomNavigation({Key key, this.data, this.metaUser}) : super(key: key);
+
+  final AuthResponse data;
+  final MetaUser metaUser;
 
   _CustomBottomNavigationState createState() => _CustomBottomNavigationState();
 }
@@ -70,7 +75,7 @@ class _CustomBottomNavigationState extends State<CustomBottomNavigation> {
   Widget _buildBody() {
     switch (selectedItem) {
       case TabItem.Profile:
-        return ProfileScreen();
+        return ProfileScreen(metaUser: widget.metaUser, data: widget.data);
       case TabItem.Event:
         return EventScreen();
       case TabItem.Sales:
@@ -113,9 +118,14 @@ class _CustomBottomNavigationState extends State<CustomBottomNavigation> {
 
   @override
   Widget build(BuildContext context) {
-    return PlatformScaffold(
-      body: _buildBody(),
-      bottomNavBar: _buildBottomNavBar(),
+    return WillPopScope(
+      onWillPop: () async {
+        return true;
+      },
+      child: PlatformScaffold(
+        body: _buildBody(),
+        bottomNavBar: _buildBottomNavBar(),
+      ),
     );
   }
 }

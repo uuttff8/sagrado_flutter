@@ -1,15 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
+import 'package:provider/provider.dart';
 import 'package:sagrado_flutter/src/model/model.dart';
 import 'package:sagrado_flutter/src/net/net_manager.dart';
 import 'package:sagrado_flutter/src/services/social_manager.dart';
-import 'package:sagrado_flutter/src/ui/login/splash/splash.dart';
+import 'package:sagrado_flutter/src/services/user_manager.dart';
+import 'package:sagrado_flutter/src/ui/login/complete_registration/complete_registration.dart';
+import 'package:sagrado_flutter/src/ui/login/complete_registration/complete_registration_provider.dart';
+import 'package:sagrado_flutter/src/ui/bottom_navigation/bottom_navigation.dart';
 
 class SplashProvider with ChangeNotifier {
+  BuildContext context;
+
+  SplashProvider({this.context});
+
   var socialManager = SocialManager();
   var facebookLogin = FacebookLogin();
-
-  SplashScreenState _providerView = SplashScreenState();
 
   void initiateFacebookLogin() {
     loginSocial(social: SocialType.facebook);
@@ -51,6 +57,29 @@ class SplashProvider with ChangeNotifier {
       metaUser: metaUser,
     );
 
-    _providerView.onSocialLogin(data: response);
+    onSocialLogin(data: response, metaUser: metaUser);
+  }
+
+  void onSocialLogin({AuthResponse data, MetaUser metaUser}) {
+    UserManager.instance.auth(token: data.token);
+    if (data.user.isRegistered()) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) =>
+              CustomBottomNavigation(data: data, metaUser: metaUser),
+        ),
+      );
+    } else {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ChangeNotifierProvider(
+            builder: (BuildContext context) => CompleteRegistrationProvider(),
+            child: CompleteRegistration(metaUser: metaUser),
+          ),
+        ),
+      );
+    }
   }
 }

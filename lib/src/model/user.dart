@@ -43,7 +43,7 @@ class User {
   String email;
   PushSubscribes pushSubscribes;
   List<Profile> profiles;
-  ClubCard card;
+  ClubCard card; // maybe nothing in json
 
   User({this.id, this.email, this.pushSubscribes, this.profiles, this.card});
 
@@ -56,12 +56,13 @@ class User {
       email: json['email'],
       pushSubscribes: PushSubscribes.fromJson(json['push_subscribes']),
       profiles: profilesList,
-      card: json['card'],
+      card: json['card'] == null ? null : ClubCard.fromJson(json['card']),
     );
   }
 
   String toString() {
     return '''
+    {
       'id': $id,
       'email': $email,
       'push_subscribes': ${pushSubscribes.toString()},
@@ -174,5 +175,16 @@ class ClubCard {
       barcode: json['barcode'],
       status: json['status'],
     );
+  }
+
+  @override
+  String toString() {
+    return '''
+      fio: $fio,
+      number: $number,
+      balance: $balance,
+      barcode: $barcode,
+      status: $status,
+  ''';
   }
 }

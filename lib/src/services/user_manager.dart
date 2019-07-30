@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/material.dart';
 import 'package:flutter_keychain/flutter_keychain.dart';
 import 'package:meta/meta.dart';
 import 'package:sagrado_flutter/src/model/model.dart';
@@ -11,7 +12,7 @@ class UserManager {
 
   void saveUser(User user) {
     String jsonData = json.encode(user.toString());
-    print(jsonData);
+    debugPrint(jsonData);
     Prefs.shared.setUser(user: jsonData);
   }
 

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/rendering.dart';
 import 'package:sagrado_flutter/src/services/social_manager.dart' show MetaUser;
 import 'package:dio/dio.dart';
 import 'package:flutter_keychain/flutter_keychain.dart';
@@ -175,12 +176,12 @@ class _NetManagerParse {
 
 void _printData(
     {String url, Future<Map> headers, int statusCode, String body}) async {
-  print('----');
-  print(url);
+  debugPrint('----');
+  debugPrint(url);
   print(await headers);
-  print('status code:' + '$statusCode');
-  print(body);
-  print('----');
+  debugPrint('status code:' + '$statusCode');
+  debugPrint(body);
+  debugPrint('----');
 }
 
 String _formatPhone(String phone) {

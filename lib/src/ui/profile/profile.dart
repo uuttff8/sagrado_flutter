@@ -2,12 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
+import 'package:sagrado_flutter/src/model/model.dart';
+import 'package:sagrado_flutter/src/services/social_manager.dart';
 import 'package:sagrado_flutter/src/ui/history/history.dart';
 import 'package:sagrado_flutter/src/ui/settings/settings.dart';
 import 'package:sagrado_flutter/src/ui/settings/settings_provider.dart';
 
 class ProfileScreen extends StatelessWidget {
-  const ProfileScreen({Key key}) : super(key: key);
+  ProfileScreen({Key key, this.data, this.metaUser}) : super(key: key);
+
+  final AuthResponse data;
+  final MetaUser metaUser;
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +27,7 @@ class ProfileScreen extends StatelessWidget {
               body: SafeArea(
                 child: Column(
                   children: <Widget>[
-                    ProfileAppBar(),
+                    ProfileAppBar(metaUser: metaUser),
                     Padding(
                       padding: const EdgeInsets.only(
                           right: 16.0, top: 30.0, left: 16),
@@ -134,9 +139,9 @@ class HistoryButton extends StatelessWidget {
 }
 
 class ProfileAppBar extends StatelessWidget {
-  const ProfileAppBar({
-    Key key,
-  }) : super(key: key);
+  const ProfileAppBar({Key key, @required this.metaUser}) : super(key: key);
+
+  final MetaUser metaUser;
 
   @override
   Widget build(BuildContext context) {
@@ -155,7 +160,7 @@ class ProfileAppBar extends StatelessWidget {
               ),
               SizedBox(width: 15),
               Text(
-                'Олег'.toUpperCase(),
+                '${metaUser.userName}'.toUpperCase() ?? "",
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 22,
