@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
+import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:sagrado_flutter/src/model/model.dart';
 import 'package:sagrado_flutter/src/net/net_manager.dart';
@@ -61,7 +62,7 @@ class SplashProvider with ChangeNotifier {
   }
 
   void onSocialLogin({AuthResponse data, MetaUser metaUser}) {
-    UserManager.instance.auth(token: data.token);
+    UserManager.auth(token: data.token);
     if (data.user.isRegistered()) {
       Navigator.push(
         context,

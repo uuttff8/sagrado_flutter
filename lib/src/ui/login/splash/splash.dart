@@ -4,6 +4,7 @@ import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:sagrado_flutter/src/model/model.dart';
+import 'package:sagrado_flutter/src/net/constants.dart';
 import 'package:sagrado_flutter/src/net/net_manager.dart';
 import 'package:sagrado_flutter/src/services/user_manager.dart';
 import 'package:sagrado_flutter/src/ui/login/code/code.dart';
@@ -14,6 +15,7 @@ import 'package:sagrado_flutter/src/ui/profile/profile.dart';
 import 'package:sagrado_flutter/src/ui/profile/profile_provider.dart';
 import 'package:sagrado_flutter/src/widgets/auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -26,20 +28,6 @@ class _SplashScreenState extends State<SplashScreen> {
 
   Image _imageAsset = Image.asset('assets/images/checkLogin.png');
   bool _isAgree = true;
-
-  void checkAgreement() {
-    if (_isAgree == true) {
-      setState(() {
-        _imageAsset = Image.asset('assets/images/uncheckLogin.png');
-      });
-      _isAgree = false;
-    } else {
-      setState(() {
-        _imageAsset = Image.asset('assets/images/checkLogin.png');
-      });
-      _isAgree = true;
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -113,7 +101,11 @@ class _SplashScreenState extends State<SplashScreen> {
                                 ),
                               ),
                               color: Color(0xff3b5999),
-                              onPressed: provider.initiateFacebookLogin,
+                              onPressed: () {
+                                checkAgreement(() {
+                                  provider.initiateFacebookLogin();
+                                });
+                              },
                             ),
                             SizedBox(height: 50),
                             SizedBox(
@@ -125,7 +117,7 @@ class _SplashScreenState extends State<SplashScreen> {
                                     iconSize: 15,
                                     icon: _imageAsset,
                                     onPressed: () {
-                                      checkAgreement();
+                                      switchAgreement();
                                     },
                                   ),
                                   CupertinoButton(
@@ -144,12 +136,17 @@ class _SplashScreenState extends State<SplashScreen> {
                                         ],
                                       ),
                                     ),
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      _launchAgreementURL();
+                                    },
                                   )
                                 ],
                               ),
                             ),
-                            new LoginPhoneButton(authTextField: authTextField),
+                            new LoginPhoneButton(
+                              authTextField: authTextField,
+                              isAgree: _isAgree,
+                            ),
                           ],
                         ),
                       ),
@@ -164,8 +161,63 @@ class _SplashScreenState extends State<SplashScreen> {
     );
   }
 
+  void checkAgreement(void callback()) {
+    if (!_isAgree) {
+      _showError();
+    } else {
+      callback();
+    }
+  }
+
+  void _showError() {
+    showPlatformDialog(
+      context: context,
+      builder: (_) => PlatformAlertDialog(
+        title: Text(
+          'Вы не можете продолжить, так как должны согласиться с лицензионным соглашением',
+          style: TextStyle(fontSize: 16),
+        ),
+        actions: <Widget>[
+          PlatformDialogAction(
+            child: PlatformText('Ok'),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          )
+        ],
+      ),
+    );
+  }
+
+  void switchAgreement() {
+    if (_isAgree == true) {
+      setState(() {
+        _imageAsset = Image.asset('assets/images/uncheckLogin.png');
+      });
+      _isAgree = false;
+    } else {
+      setState(() {
+        _imageAsset = Image.asset('assets/images/checkLogin.png');
+      });
+      _isAgree = true;
+    }
+  }
+
+  _launchAgreementURL() async {
+    const url = AGREEMENT_LINK;
+    if (await canLaunch(url)) {
+      try {
+        await launch(url);
+      } catch (e) {
+        debugPrint('pizdec pri agreement');
+      }
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
   void onSocialLogin({AuthResponse data}) {
-    UserManager.instance.auth(token: data.token);
+    UserManager.auth(token: data.token);
     if (data.user.isRegistered()) {
       Navigator.push(
         context,
@@ -191,15 +243,27 @@ class _SplashScreenState extends State<SplashScreen> {
 }
 
 class LoginPhoneButton extends StatelessWidget {
-  const LoginPhoneButton({
+  LoginPhoneButton({
     Key key,
     @required this.authTextField,
+    @required this.isAgree,
   }) : super(key: key);
 
+  bool isAgree = true;
   final AuthTextField authTextField;
 
   @override
   Widget build(BuildContext context) {
+    void checkAgreement(void callback()) {
+      if (!isAgree) {
+        _showErrorDialog(context,
+            text:
+                'Вы не можете продолжить, так как должны согласиться с лицензионным соглашением');
+      } else {
+        callback();
+      }
+    }
+
     return Padding(
       padding: const EdgeInsets.only(top: 20.0, left: 40.0, right: 40.0),
       child: SizedBox(

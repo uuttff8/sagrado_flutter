@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import 'package:sagrado_flutter/src/net/net_manager.dart';
 import 'package:flutter_keychain/flutter_keychain.dart';
+import 'package:sagrado_flutter/src/services/user_manager.dart';
 import 'package:sagrado_flutter/src/ui/base/base.dart';
 
 import 'package:sagrado_flutter/src/ui/login/chose.dart';
@@ -163,8 +164,7 @@ class _CodeScreenState extends State<CodeScreen> {
 
       print(widget.phone + '  cc   ' + codeTextField.controller.text);
 
-      FlutterKeychain.put(
-          key: 'token', value: response.token ?? ''); // i'm not sure, but...
+      UserManager.auth(token: response.token ?? '');
 
       if (widget.isNew == true) {
         Navigator.push(

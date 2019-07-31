@@ -106,7 +106,7 @@ class NetManager {
     );
 
     if (response.statusCode == 200) {
-      return parser.parseSaveSettings(response.data.toString());
+      return parser.parseUserSettings(response.data.toString());
     } else {
       throw Exception('try later');
     }
@@ -154,6 +154,26 @@ class NetManager {
       throw Exception('try later');
     }
   }
+
+  Future<User> getProfileInfo() async {
+    final response = await http.get(
+      baseUrlHttp + '/user/info',
+      headers: await headers,
+    );
+
+    _printData(
+      url: baseUrl + '/user/info',
+      body: response.body,
+      statusCode: response.statusCode,
+      headers: headers,
+    );
+
+    if (response.statusCode == 200) {
+      return parser.parseUserSettings(response.body);
+    } else {
+      throw Exception('Failed to post code');
+    }
+  }
 }
 
 class _NetManagerParse {
@@ -165,7 +185,7 @@ class _NetManagerParse {
     return PhoneCodeResponse.fromJson(json.decode(responseBody));
   }
 
-  User parseSaveSettings(String responseBody) {
+  User parseUserSettings(String responseBody) {
     return UserStatusResponse.fromJson(json.decode(responseBody)).user;
   }
 

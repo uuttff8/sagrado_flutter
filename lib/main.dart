@@ -16,7 +16,7 @@ class SagradoApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return PlatformApp(
       home: ChangeNotifierProvider(
-        builder: (_) => SplashProvider(),
+        builder: (context) => SplashProvider(context: context),
         child: SplashScreen(),
       ),
       localizationsDelegates: const <LocalizationsDelegate<dynamic>>[

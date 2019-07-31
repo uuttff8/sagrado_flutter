@@ -4,4 +4,4 @@ const API_LINK_OLD_HTTP = 'http://app.sagradocorp.org';
 
 const String API_LINK_STAGE = 'sagrado.tmweb.ru';
 
-const String AGREEMENT = 'http://app.sagradocorp.org/agreement';
+const String AGREEMENT_LINK = 'http://app.sagradocorp.org/agreement';

@@ -3,6 +3,7 @@ import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import 'package:sagrado_flutter/src/model/model.dart';
+import 'package:sagrado_flutter/src/net/net_manager.dart';
 import 'package:sagrado_flutter/src/services/social_manager.dart';
 import 'package:sagrado_flutter/src/ui/history/history.dart';
 import 'package:sagrado_flutter/src/ui/settings/settings.dart';
@@ -81,21 +82,36 @@ class ListViewProfile extends StatelessWidget {
             ],
           ),
           SizedBox(height: 17),
-          Container(
-            height: 150,
-            child: GridView.count(
-              crossAxisCount: 1,
-              scrollDirection: Axis.horizontal,
-              children: List.generate(100, (index) {
-                return Center(
-                  child: Text(
-                    'Item $index',
-                    style: Theme.of(context).textTheme.headline,
-                  ),
-                );
-              }),
-            ),
-          )
+          FutureBuilder(
+            future: NetManager.shared.getProfileInfo(),
+            builder: (BuildContext context, AsyncSnapshot snapshot) {
+              if (snapshot.hasError) return Text("Error Occurred");
+              switch (snapshot.connectionState) {
+                case ConnectionState.waiting:
+                  print('WAITING WAITING WAITING');
+                  return Center(child: CircularProgressIndicator());
+                case ConnectionState.done:
+                  print('DONE DONE DONE');
+                  return Container(
+                    height: 150,
+                    child: GridView.count(
+                      crossAxisCount: 1,
+                      scrollDirection: Axis.horizontal,
+                      children: List.generate(100, (index) {
+                        return Center(
+                          child: Text(
+                            'Item $index',
+                            style: Theme.of(context).textTheme.headline,
+                          ),
+                        );
+                      }),
+                    ),
+                  );
+                default:
+                  return Container();
+              }
+            },
+          ),
         ],
       ),
     );

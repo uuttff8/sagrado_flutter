@@ -30,8 +30,8 @@ class CompleteRegistrationProvider with ChangeNotifier {
       RegistrationData(name: "", lastname: "", birthDate: null, gender: 2);
 
   bool onRegister(User user) {
-    UserManager.instance.saveUser(user);
-    UserManager.instance.setUserDoneRegistration(true);
+    UserManager.saveUser(user);
+    UserManager.setUserDoneRegistration(true);
 
     return true;
   }

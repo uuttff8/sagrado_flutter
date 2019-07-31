@@ -77,7 +77,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               "Выйти из аккаунта",
               () {
                 print("settings: logout!!!!");
-                UserManager.instance.logout();
+                UserManager.logout();
                 Navigator.push(
                   context,
                   MaterialPageRoute(

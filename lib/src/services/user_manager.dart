@@ -10,30 +10,30 @@ class UserManager {
   UserManager._();
   static final UserManager instance = UserManager._();
 
-  void saveUser(User user) {
+  static void saveUser(User user) {
     String jsonData = json.encode(user.toString());
     debugPrint(jsonData);
     Prefs.shared.setUser(user: jsonData);
   }
 
-  Future<User> getUser() async {
+  static Future<User> getUser() async {
     String temp = await Prefs.shared.getUser();
     return User.fromJson(json.decode(temp));
   }
 
-  Future<bool> isRegistrationDone() async {
+  static Future<bool> isRegistrationDone() async {
     return await Prefs.shared.getRegistrationPassed();
   }
 
-  void setUserDoneRegistration(bool value) {
+  static void setUserDoneRegistration(bool value) {
     Prefs.shared.setRegistrationPassed(value);
   }
 
-  void auth({@required String token}) {
+  static void auth({@required String token}) {
     FlutterKeychain.put(key: 'token', value: token);
   }
 
-  void logout() async {
+  static void logout() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     if (await prefs.clear() != true) {
       print('Shared Preferences clear is not succesfull');
